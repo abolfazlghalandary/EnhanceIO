@@ -7,7 +7,7 @@ KERNEL_SOURCE_VERSION ?= $(shell uname -r)
 KERNEL_TREE ?= /lib/modules/$(KERNEL_SOURCE_VERSION)/build
 EXTRA_CFLAGS += -I$(KERNEL_TREE)/drivers/md -I./ -DCOMMIT_REV="\"$(COMMIT_REV)\""
 EXTRA_CFLAGS += -I$(KERNEL_TREE)/include/ -I$(KERNEL_TREE)/include/linux 
-obj-m	+= enhanceio.o enhanceio_lru.o enhanceio_fifo.o  enhanceio_rand.o
+obj-m	+= enhanceio.o enhanceio_lru.o enhanceio_fifo.o  enhanceio_rand.o eio_lifo.o
 enhanceio-y	+= \
 	eio_conf.o \
 	eio_ioctl.o \
@@ -21,6 +21,7 @@ enhanceio-y	+= \
 enhanceio_fifo-y	+= eio_fifo.o
 enhanceio_rand-y	+= eio_rand.o
 enhanceio_lru-y	+= eio_lru.o
+enhanceio_lifo-y	+= eio_lifo.o
 .PHONY: all
 all: modules
 .PHONY:    modules
@@ -33,6 +34,7 @@ modules_install: modules
 	install -o root -g root -m 0755 enhanceio_rand.ko $(DESTDIR)/lib/modules/$(KERNEL_SOURCE_VERSION)/extra/enhanceio/
 	install -o root -g root -m 0755 enhanceio_fifo.ko $(DESTDIR)/lib/modules/$(KERNEL_SOURCE_VERSION)/extra/enhanceio/
 	install -o root -g root -m 0755 enhanceio_lru.ko $(DESTDIR)/lib/modules/$(KERNEL_SOURCE_VERSION)/extra/enhanceio/
+	install -o root -g root -m 0755 enhanceio_lifo.ko $(DESTDIR)/lib/modules/$(KERNEL_SOURCE_VERSION)/extra/enhanceio/
 	depmod -a
 .PHONY: install
 install: modules_install

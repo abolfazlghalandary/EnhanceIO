@@ -379,9 +379,11 @@ struct flash_cacheblock {
 #define CACHE_REPL_FIFO         1
 #define CACHE_REPL_LRU          2
 #define CACHE_REPL_RANDOM       3
+#define CACHE_REPL_LIFO         1
 #define CACHE_REPL_FIRST        CACHE_REPL_FIFO
 #define CACHE_REPL_LAST         CACHE_REPL_RANDOM
 #define CACHE_REPL_DEFAULT      CACHE_REPL_FIFO
+#define CACHE_REPL_LAST2         CACHE_REPL_LIFO
 
 struct eio_policy_and_name {
 	u8 p;
@@ -393,6 +395,7 @@ static const struct eio_policy_and_name eio_policy_names[] = {
 	{ CACHE_REPL_FIFO,   "fifo" },
 	{ CACHE_REPL_LRU,    "lru"  },
 	{ CACHE_REPL_RANDOM, "rand" },
+	{ CACHE_REPL_LIFO, "lifo" },
 };
 
 

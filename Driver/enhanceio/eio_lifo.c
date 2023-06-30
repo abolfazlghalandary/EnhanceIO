@@ -51,7 +51,7 @@ struct eio_lifo_cache_set {
  * Context that captures the lifo replacement policy
  */
 static struct eio_policy_header eio_lifo_ops = {
-	.sph_name		= CACHE_REPL_lifo,
+	.sph_name		= CACHE_REPL_LIFO,
 	.sph_instance_init	= eio_lifo_instance_init,
 };
 
@@ -184,7 +184,7 @@ struct eio_policy *eio_lifo_instance_init(void)
 	}
 
 	/* Initialize the lifo specific functions and variables */
-	new_instance->sp_name = CACHE_REPL_lifo;
+	new_instance->sp_name = CACHE_REPL_LIFO;
 	new_instance->sp_policy.lru = NULL;
 	new_instance->sp_repl_init = eio_lifo_init;
 	new_instance->sp_repl_exit = eio_lifo_exit;

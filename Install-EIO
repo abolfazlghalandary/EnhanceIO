@@ -102,6 +102,7 @@ _LoadMods ()
     ${SBPREFIX}modprobe enhanceio_rand &&
     ${SBPREFIX}modprobe enhanceio_fifo &&
     ${SBPREFIX}modprobe enhanceio_lru &&
+    ${SBPREFIX}modprobe enhanceio_lifo &&
     return 0
     return 1
 }

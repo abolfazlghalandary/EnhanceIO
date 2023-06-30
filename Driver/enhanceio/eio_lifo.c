@@ -102,12 +102,12 @@ eio_lifo_find_reclaim_dbn(struct eio_policy *p_ops, index_t start_index,
 	int slots_searched = 0;
 	index_t i;
 	index_t set;
-	struct eio_fifo_cache_set *cache_sets;
+	struct eio_lifo_cache_set *cache_sets;
 	struct cache_c *dmc = p_ops->sp_dmc;
 
 	set = start_index / dmc->assoc;
 	end_index = start_index + dmc->assoc;
-	cache_sets = (struct eio_fifo_cache_set *)dmc->sp_cache_set;
+	cache_sets = (struct eio_lifo_cache_set *)dmc->sp_cache_set;
 
 	i = cache_sets[set].set_lifo_next;
 	while (slots_searched < (int)dmc->assoc) {

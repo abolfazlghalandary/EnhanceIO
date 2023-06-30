@@ -95,7 +95,7 @@ int eio_lifo_cache_sets_init(struct eio_policy *p_ops)
  * The actual function that returns a victim block in index.
  */
 void
-eio_fifo_find_reclaim_dbn(struct eio_policy *p_ops, index_t start_index,
+eio_lifo_find_reclaim_dbn(struct eio_policy *p_ops, index_t start_index,
 			  index_t *index)
 {
 	index_t end_index;
@@ -109,7 +109,7 @@ eio_fifo_find_reclaim_dbn(struct eio_policy *p_ops, index_t start_index,
 	end_index = start_index + dmc->assoc;
 	cache_sets = (struct eio_fifo_cache_set *)dmc->sp_cache_set;
 
-	i = cache_sets[set].set_fifo_next;
+	i = cache_sets[set].set_lifo_next;
 	while (slots_searched < (int)dmc->assoc) {
 		EIO_ASSERT(i >= start_index);
 		EIO_ASSERT(i < end_index);
@@ -118,14 +118,14 @@ eio_fifo_find_reclaim_dbn(struct eio_policy *p_ops, index_t start_index,
 			break;
 		}
 		slots_searched++;
-		i++;
-		if (i == end_index)
-			i = start_index;
+		i--;
+		if (i < start_index)
+			i = end_index - 1;
 	}
-	i++;
-	if (i == end_index)
-		i = start_index;
-	cache_sets[set].set_fifo_next = i;
+	i--;
+	if (i < start_index)
+		i = end_index - 1;
+	cache_sets[set].set_lifo_next = i;
 }
 
 /*

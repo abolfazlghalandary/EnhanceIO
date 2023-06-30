@@ -227,10 +227,10 @@ def sanity(hdd, ssd):
 	# Performs a very basic regression of operations			
 				
 	modes = {3:"Write Through", 1:"Write Back", 2:"Read Only",0:"N/A"}
-	policies = {3:"rand", 1:"fifo", 2:"lru", 0:"N/A"}		
+	policies = {4:"lifo", 3:"rand", 1:"fifo", 2:"lru", 0:"N/A"}		
 	blksizes = {"4096":4096, "2048":2048, "8192":8192,"":0}	
 	for mode in ["wb","wt","ro"]:
-		for policy in ["rand","fifo","lru"]:
+		for policy in ["rand","fifo","lru","lifo"]:
 			for blksize in ["4096","2048","8192"]:
 				cache = Cache_rec(name = "test_cache", src_name = hdd,\
 						ssd_name = ssd, policy = policy, mode = mode,\
@@ -265,7 +265,7 @@ class Cache_rec(Structure):
 		     blksize="", assoc=""): 
 	
 		modes = {"wt":3,"wb":1,"ro":2,"":0}
-		policies = {"rand":3,"fifo":1, "lru":2,"":0}
+		policies = {"lifo":4, "rand":3,"fifo":1, "lru":2,"":0}
 		blksizes = {"4096":4096, "2048":2048, "8192":8192,"":0}	
 		associativity = {2048:128, 4096:256, 8192:512,0:0}
 		
@@ -288,7 +288,7 @@ class Cache_rec(Structure):
 	
 		# Display Cache info 
 		modes = {3:"Write Through", 1:"Write Back", 2:"Read Only",0:"N/A"}
-		policies = {3:"rand", 1:"fifo", 2:"lru", 0:"N/A"}
+		policies = {4:"lifo", 3:"rand", 1:"fifo", 2:"lru", 0:"N/A"}
 
 		print "Cache Name       : " + self.name 
 		print "Source Device    : " + self.src_name 
@@ -404,7 +404,7 @@ class Cache_rec(Structure):
 		cache_match_expr = make_udev_match_expr(self.ssd_name, self.name)
 		print cache_match_expr
 		modes = {3:"wt", 1:"wb", 2:"ro",0:"N/A"}
-		policies = {3:"rand", 1:"fifo", 2:"lru", 0:"N/A"}
+		policies = {4:"lifo", 3:"rand", 1:"fifo", 2:"lru", 0:"N/A"}
 	
 		try: 	
 			udev_rule = udev_template.replace("<cache_name>",\
@@ -485,7 +485,7 @@ def create_parser():
 	parser_edit.add_argument("-m", action="store", dest="mode", \
 			choices=["wb","wt","ro"], help="cache mode",default="")
 	parser_edit.add_argument("-p", action="store", dest="policy", \
-				choices=["rand","fifo","lru"], help="cache \
+				choices=["rand","fifo","lru","lifo"], help="cache \
 				replacement policy",default="") 
 	
 	#info
@@ -504,7 +504,7 @@ def create_parser():
 	parser_create.add_argument("-s", action="store", dest="ssd",\
 				required=True, help="name of the ssd device")
 	parser_create.add_argument("-p", action="store", dest="policy",\
-				   choices=["rand","fifo","lru"],\
+				   choices=["rand","fifo","lru","lifo"],\
 				   help="cache replacement policy",default="lru")
 	parser_create.add_argument("-m", action="store", dest="mode",\
 				   choices=["wb","wt","ro"],\
@@ -521,7 +521,7 @@ def create_parser():
 	parser_enable.add_argument("-s", action="store", dest="ssd",\
 				   required=True, help="name of the ssd device")
 	parser_enable.add_argument("-p", action="store", dest="policy",
-				   choices=["rand","fifo","lru"],\
+				   choices=["rand","fifo","lru","lifo"],\
 				   help="cache replacement policy",default="lru")
 	parser_enable.add_argument("-m", action="store", dest="mode",\
 				   choices=["wb","wt","ro"],\
@@ -563,6 +563,7 @@ def main():
 	run_cmd("/sbin/modprobe enhanceio_fifo")
 	run_cmd("/sbin/modprobe enhanceio_lru")
 	run_cmd("/sbin/modprobe enhanceio_rand")
+	run_cmd("/sbin/modprobe enhanceio_lifo")
 
 	f = open("/run/eio.lock", "w")
 	fcntl.flock(f, fcntl.LOCK_EX)
